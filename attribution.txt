@@ -1,0 +1,81 @@
+GRAPHICS:
+
+Player plane & Player bullet
+Author:Tatermand (tatermand@gmail.com)
+URL:http://opengameart.org/content/space-game-art-pack-extended
+    http://opengameart.org/content/2d-shooter-effects-alpha-version
+License(s): CC-BY-SA 3.0
+
+Enemy plane & Enemy effect
+Author:Skorpio
+URL:http://opengameart.org/content/space-ship-construction-kit
+    http://opengameart.org/content/space-ship-mech-construction-kit-2
+    http://opengameart.org/content/sci-fi-effects
+    http://opengameart.org/content/warp-effect-2
+    http://opengameart.org/content/warp-effect
+License(s): CC-BY-SA 3.0  GPL 3.0
+
+
+Player_bullet_explosion & Enemy_explsion
+Author:Retimer(support@wrathgames.com)
+URL:http://opengameart.org/content/wgstudio-explosion-animation
+    http://opengameart.org/content/wgstudio-fire-animation-loop
+    http://wrathgames.com/blog
+License(s):CC-BY 3.0 
+
+
+Background
+Author: Jattenalle
+URL: http://opengameart.org/content/space-nebula-starfield-renders
+     http://www.GodsAndIdols.com
+License(s): CC-BY 3.0 OGA-BY 3.0
+
+Player_explosion
+Author:Jetrel
+URL:http://opengameart.org/content/explosion-animations
+License(s): CC0
+
+Items
+Author:Joseph Crown
+URL:http://opengameart.org/content/powerup-animated-orb
+     http://www.crownjoseph.com
+License(s): CC0
+
+
+FONTS:
+
+Arcade Classic p
+Author:Jakob Fischer [Pizzadude] (jakob@pizzadude.dk)
+URL :http://www.dafont.com/arcade-classic-pizz.font
+     http://www.pizzadude.dk
+License(s):Free for personal use
+
+Gamer
+Author:Aaron D. Chand
+URL:http://www.dafont.com/gamer-2.font
+License(s):100 % Free
+
+Ancient Medium
+Author:Jorge Paulino Dzul Koyoc
+URL:http://www.dafont.com/ancient.font
+License(s):Free for personal use
+
+
+MUSIC
+Author:Level 27
+URL:http://opengameart.org/content/level-27-press-any-key-to-continue-free-to-use-audio-tracks
+License(s): CC-BY 3.0
+
+
+SOUND
+
+Coin,Alarm & Item
+Author:wobbleboxx
+URL:http://opengameart.org/content/level-up-power-up-coin-get-13-sounds
+    http://wobbleboxx.com
+License(s): CC0
+
+Hint
+Author:dland
+URL:http://www.freesound.org/people/dland/sounds/320181/
+License(s): CC0
