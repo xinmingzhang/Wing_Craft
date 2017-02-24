@@ -6,9 +6,9 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 pg.init()
 pg.mixer.pre_init(44100, -16, 1, 512)
-pg.display.set_mode((600,800))
+pg.display.set_mode((600,800),pg.NOFRAME)
 
-ORIGINAL_CAPTION = "xmzhang"
+ORIGINAL_CAPTION = "WingCraft"
 pg.display.set_caption(ORIGINAL_CAPTION)
 
 GFX = tools.load_all_gfx(os.path.join("resources", "graphics"))

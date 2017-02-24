@@ -20,6 +20,8 @@ transfor_dict = {'1': enemy.Private0,
                  '16': enemy.Boss1,
                  '17': enemy.Boss2,
                  '18': enemy.Boss3,
+                 '19': enemy.Boss4,
+                 '20': enemy.Boss5,
                  '21': explosion.Emerge1,
                  '22': explosion.Emerge2,
                  '23': explosion.WarningSign}

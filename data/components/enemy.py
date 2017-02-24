@@ -2,10 +2,10 @@ import random
 from itertools import cycle
 import pygame as pg
 from . import bullet
-from .explosion import EnemyExplosion, Emerge2, Exhaust, RotateRing, Cone, EndingExplosion, Radar
+from .explosion import EnemyExplosion, Emerge2, Exhaust, RotateRing, Cone, EndingExplosion, Radar,Shield
 from .angles import get_angle, get_distance, project
-from ..prepare import GFX, SCREENRECT
-from .items import Coin, Powerup, Bomb, Life
+from ..prepare import GFX, SCREENRECT,WIDTH,HEIGHT
+from .items import Coin, Powerup, Bomb, Life,Poison
 
 
 class Enemy(pg.sprite.Sprite):
@@ -126,7 +126,16 @@ class Private0(Enemy):
         self.image = pg.transform.rotate(rot_image, self.image_rot_angle)
 
     def check_death(self):
-        if self.frame >= 200:
+        if self.rect.top > HEIGHT:
+            self.kill()
+            self.hit_box.kill()
+        elif self.rect.bottom < 0:
+            self.kill()
+            self.hit_box.kill()
+        elif self.rect.left > WIDTH:
+            self.kill()
+            self.hit_box.kill()
+        elif self.rect.right < 0:
             self.kill()
             self.hit_box.kill()
         if self.health <= 0:
@@ -356,18 +365,18 @@ class SecondLieutenant0(Enemy):
             self.game.explosion_effect.add(self.exhaust1)
             self.game.explosion_effect.add(self.exhaust2)
             self.game.explosion_effect.add(self.exhaust3)
-        if self.shoot_on == True:
-
-            self.image = pg.transform.flip(GFX['e_secondlieutenant0'], False, False)
-            self.image.blit(self.effect_image, (self.w - 32 - 43, self.h - 32 +90 ))
-            self.image.blit(self.effect_image, (self.w - 32 + 43, self.h - 32 + 90))
-            self.image.blit(self.effect_image, (self.w - 32 - 43, self.h - 32 + 30))
-            self.image.blit(self.effect_image, (self.w - 32 + 43, self.h - 32 + 30))
-            self.image.blit(self.effect_image, (self.w - 32 - 43, self.h - 32 - 40))
-            self.image.blit(self.effect_image, (self.w - 32 + 43, self.h - 32 - 40))
-            self.effect_image = next(self.effect_images)
-        else:
-            self.image = pg.transform.flip(GFX['e_secondlieutenant0'], False, False)
+        # if self.shoot_on == True:
+        #
+        #     self.image = pg.transform.flip(GFX['e_secondlieutenant0'], False, False)
+        #     self.image.blit(self.effect_image, (self.w - 32 - 43, self.h - 32 +90 ))
+        #     self.image.blit(self.effect_image, (self.w - 32 + 43, self.h - 32 + 90))
+        #     self.image.blit(self.effect_image, (self.w - 32 - 43, self.h - 32 + 30))
+        #     self.image.blit(self.effect_image, (self.w - 32 + 43, self.h - 32 + 30))
+        #     self.image.blit(self.effect_image, (self.w - 32 - 43, self.h - 32 - 40))
+        #     self.image.blit(self.effect_image, (self.w - 32 + 43, self.h - 32 - 40))
+        #     self.effect_image = next(self.effect_images)
+        # else:
+        #     self.image = pg.transform.flip(GFX['e_secondlieutenant0'], False, False)
 
     def update_pos(self):
         self.pos = (self.pos[0], self.pos[1] + self.direction[1] * self.speed)
@@ -473,7 +482,7 @@ class FirstLieutenant0(Enemy):
         self.hit_box.rect.center = self.pos
 
     def check_shoot(self):
-        if self.frame % 200 > 100:
+        if self.frame % 200 > 150:
             if self.frame % 5 == 1:
                 self.shoot()
 
@@ -788,14 +797,14 @@ class Boss1(Enemy):
 
     def shoot(self):
         if self.health_ratio >= 0.5:
-            if self.frame % 300 == 1:
+            if self.frame % 400 == 101:
                 self.speed = 0
                 self.shoot_on = False
                 Cone(self.game, (self.pos[0], self.pos[1] + 250))
-            elif self.frame % 300 >= 200:
+            elif self.frame % 400 >= 300:
                 self.shoot_on = False
                 self.speed = 0.5
-            elif self.frame % 300 >= 100:
+            elif self.frame % 400 >= 200:
                 self.speed = 0
                 self.shoot_on = True
                 bullet.EnemyBullet(self.pos, random.randint(-110, -70), None, 15, random.randint(5, 10),
@@ -848,6 +857,7 @@ class Boss1(Enemy):
             EnemyExplosion(self.game, self, self.game.explosion_effect)
             for i in range(50):
                 Coin(self.game, (self.pos[0] + random.randint(-50, 50), self.pos[1] + random.randint(-50, 50)), None)
+            Life(self.game,self.pos)
             EndingExplosion(self.game)
             try:
                 self.game.p1_score = self.game.player_1.score
@@ -870,8 +880,8 @@ class Boss2(Enemy):
         super(Boss2, self).__init__(game, pos)
         self.tag = 'boss'
         self.target = self.find_target_pos()
-        self.o_health = 6000
-        self.health = 6000
+        self.o_health = 5000
+        self.health = 5000
         self.health_ratio = self.health * 1.0 / self.o_health
         self.speed = 0.5
         self.direction = [1, 0]
@@ -962,6 +972,7 @@ class Boss2(Enemy):
             EnemyExplosion(self.game, self, self.game.explosion_effect)
             for i in range(50):
                 Coin(self.game, (self.pos[0] + random.randint(-50, 50), self.pos[1] + random.randint(-50, 50)), None)
+            Life(self.game,self.pos)
             EndingExplosion(self.game)
             try:
                 self.game.p1_score = self.game.player_1.score
@@ -985,4 +996,400 @@ class Boss2(Enemy):
 
 
 class Boss3(Enemy):
-    pass
+    def __init__(self, game, pos):
+        super(Boss3, self).__init__(game, pos)
+        self.tag = 'boss'
+        self.target = self.find_target_pos()
+        self.o_health = 7000
+        self.health = 7000
+        self.health_ratio = self.health * 1.0 / self.o_health
+        self.speed = 0.5
+        self.direction = [1, 0]
+        self.image = pg.transform.flip(GFX['boss31'], False, True)
+        self.rect = self.image.get_rect(center=self.pos)
+        self.hit_box.image = pg.Surface((100, 120))
+        self.hit_box.rect = self.hit_box.image.get_rect(center=self.pos)
+        self.hit_box.body = self
+        self.exhaust1 = Exhaust(self, (-18, -120), 2, True)
+        self.exhaust2 = Exhaust(self, (18, -120), 2, True)
+        self.heart = RotateRing(self, 220)
+
+        self.w = self.image.get_width() / 2.0
+        self.h = self.image.get_height() / 2.0
+        self.effect_images = cycle([GFX['e_00{}{}'.format((x + 1) // 10, (x + 1) % 10)] for x in range(10)])
+        self.effect_image = next(self.effect_images)
+        self.shield = Shield(self,300)
+
+        self.max_summon = 5
+        self.summon_group = pg.sprite.Group()
+        self.stealth = False
+        self.frame = 0
+
+    def shoot(self):
+        if self.health_ratio >= 0.6:
+            if self.frame % 10 == 1 and len(self.summon_group) <= self.max_summon * 2:
+                pos = (random.randint(50,500),100)
+                effect = Emerge2(self.game,pos)
+                self.game.explosion_effect.add(effect)
+                summon_sprite = Private0(self.game,pos)
+                self.summon_group.add(summon_sprite)
+                self.game.enemies.add(summon_sprite)
+                self.game.enemies_hit_box.add(summon_sprite.hit_box)
+                self.stealth = False
+        elif self.health_ratio >= 0.2:
+            if self.frame % 600 == 1:
+                for i in range(100,600,100):
+                    summon_sprite = SecondLieutenant0(self.game,(i,850))
+                    self.game.enemies.add(summon_sprite)
+                    self.game.enemies_hit_box.add(summon_sprite.hit_box)
+            if self.frame % 600 >= 100:
+                self.stealth = True
+            else:
+                self.stealth = False
+        else:
+            self.stealth = False
+            if self.frame % 20 == 1 and len(self.summon_group) < self.max_summon:
+                pos = (random.choice([x for x in range(100,500,100)]),random.choice([50,350,100]))
+                effect= Emerge2(self.game,pos)
+                self.game.explosion_effect.add(effect)
+                summon_sprite = Captain1(self.game,pos)
+                self.summon_group.add(summon_sprite)
+                self.game.enemies.add(summon_sprite)
+                self.game.enemies_hit_box.add(summon_sprite.hit_box)
+
+
+
+    def update_img(self):
+        if self.health_ratio <= 0.2:
+            self.image = pg.transform.flip(GFX['boss33'], False, True)
+            self.game.explosion_effect.add(self.exhaust1)
+            self.game.explosion_effect.add(self.exhaust2)
+            self.game.explosion_effect.add(self.heart)
+        elif self.health_ratio<= 0.6:
+            if self.stealth == True:
+                self.image = GFX['name0']
+                self.exhaust1.kill()
+                self.exhaust2.kill()
+            elif self.stealth == False:
+                self.image = pg.transform.flip(GFX['boss32'], False, True)
+                self.game.explosion_effect.add(self.exhaust1)
+                self.game.explosion_effect.add(self.exhaust2)
+        else:
+            self.image = pg.transform.flip(GFX['boss31'], False, True)
+            self.game.explosion_effect.add(self.exhaust1)
+            self.game.explosion_effect.add(self.exhaust2)
+            self.game.explosion_effect.add(self.heart)
+
+    def update_pos(self):
+        self.pos = (self.pos[0] + self.direction[0] * self.speed, self.pos[1] + self.direction[1] * self.speed)
+        self.rect.center = self.pos
+        if self.rect.left <= 0:
+            self.direction = [1, 0]
+        elif self.rect.right >= 600:
+            self.direction = [-1, 0]
+        self.hit_box.rect.center = self.pos
+
+    def get_bomb_damage(self):
+        self.game.explosion_effect.add(self.shield)
+        self.health -= 5
+
+    def check_death(self):
+        if self.health <= 0:
+            self.kill()
+            self.hit_box.kill()
+            self.game.enemies.empty()
+            self.game.enemies_hit_box.empty()
+            self.game.enemy_bullets.empty()
+            EnemyExplosion(self.game, self, self.game.explosion_effect)
+            for i in range(50):
+                Coin(self.game, (self.pos[0] + random.randint(-50, 50), self.pos[1] + random.randint(-50, 50)), None)
+            Life(self.game,self.pos)
+            EndingExplosion(self.game)
+            try:
+                self.game.p1_score = self.game.player_1.score
+            except:
+                pass
+            try:
+                self.game.p2_score = self.game.player_2.score
+            except:
+                pass
+
+    def check_shoot(self):
+        self.shoot()
+
+    def custom(self):
+        self.health_ratio = self.health * 1.0 / self.o_health
+
+
+class Boss4(Enemy):
+    def __init__(self,game,pos):
+        super(Boss4, self).__init__(game, pos)
+        self.tag = 'boss'
+        self.target = self.find_target_pos()
+        self.o_health = 6000
+        self.health = 6000
+        self.health_ratio = self.health * 1.0 / self.o_health
+        self.speed = 0.5
+        self.direction = [1, 0]
+        self.image = pg.transform.flip(GFX['boss41'], False, False)
+        self.rect = self.image.get_rect(center=self.pos)
+        self.hit_box.image = pg.Surface((90, 90))
+        self.hit_box.rect = self.hit_box.image.get_rect(center=self.pos)
+        self.hit_box.body = self
+        self.exhaust1 = Exhaust(self, (-22, -55), 2, True)
+        self.exhaust2 = Exhaust(self, (22, -55), 2, True)
+        self.heart = RotateRing(self, 180)
+
+        self.w = self.image.get_width() / 2.0
+        self.h = self.image.get_height() / 2.0
+        self.effect_images = cycle([GFX['e_00{}{}'.format((x + 1) // 10, (x + 1) % 10)] for x in range(10)])
+        self.effect_image = next(self.effect_images)
+        self.shield = Shield(self,200)
+        self.shoot_on = False
+        self.frame = 0
+
+        self.beam1 = Boss4Beam(self,0)
+        self.beam2 = Boss4Beam(self,-2)
+        self.summon = False
+
+    def shoot(self):
+        if self.health_ratio >= 0.2:
+            if self.frame % 100 == 1:
+                self.shoot_on = True
+                target = self.find_target_pos()
+                bullet.Boss4Bullet2(self.pos,0,target,40,5,self.game.enemy_bullets)
+            else:
+                self.shoot_on = False
+            if self.health_ratio <= 0.5 and self.summon == False:
+                effect = Emerge2(self.game,(300,350))
+                self.game.explosion_effect.add(effect)
+                puppet = Boss4Pupper(self.game,(300,350))
+                self.game.enemies.add(puppet)
+                self.game.enemies_hit_box.add(puppet.hit_box)
+                self.summon = True
+
+        else:
+            self.shoot_on = True
+            bullet.CaptainBullet0(self.pos, -self.frame * 7, self.game.enemy_bullets)
+            if self.frame %100 == 1:
+                target = self.find_target_pos()
+                num = random.randint(3,5)
+                bullet.Boss4Weappon1(self.pos,target, num, self.game.enemy_bullets)
+
+
+    def update_img(self):
+        if self.groups():
+            self.game.explosion_effect.add(self.exhaust1)
+            self.game.explosion_effect.add(self.exhaust2)
+            self.game.explosion_effect.add(self.heart)
+            self.game.enemies.add(self.beam1)
+            self.game.enemies_hit_box.add(self.beam1.hit_box)
+            self.game.enemies.add(self.beam2)
+            self.game.enemies_hit_box.add(self.beam2.hit_box)
+
+        if self.shoot_on == True:
+            if self.health_ratio <= 0.2:
+                self.image = pg.transform.flip(GFX['boss43'], False, False)
+            elif self.health_ratio <= 0.6:
+                self.image = pg.transform.flip(GFX['boss42'], False, False)
+            else:
+                self.image = pg.transform.flip(GFX['boss41'], False, False)
+            self.image.blit(self.effect_image, (self.w - 32, self.h - 32))
+            self.effect_image = next(self.effect_images)
+        elif self.shoot_on == False:
+            if self.health_ratio <= 0.2:
+                self.image = pg.transform.flip(GFX['boss43'], False, False)
+            elif self.health_ratio <= 0.6:
+                self.image = pg.transform.flip(GFX['boss42'], False, False)
+            else:
+                self.image = pg.transform.flip(GFX['boss41'], False, False)
+
+
+
+    def update_pos(self):
+        self.pos = (self.pos[0] + self.direction[0] * self.speed, self.pos[1] + self.direction[1] * self.speed)
+        self.rect.center = self.pos
+        if self.rect.left <= 0:
+            self.direction = [1, 0]
+        elif self.rect.right >= 600:
+            self.direction = [-1, 0]
+        self.hit_box.rect.center = self.pos
+
+    def get_bomb_damage(self):
+        self.game.explosion_effect.add(self.shield)
+        self.health -= 5
+
+    def check_death(self):
+        if self.health <= 0:
+            self.kill()
+            self.hit_box.kill()
+            self.game.enemies.empty()
+            self.game.enemies_hit_box.empty()
+            self.game.enemy_bullets.empty()
+            EnemyExplosion(self.game, self, self.game.explosion_effect)
+            for i in range(50):
+                Coin(self.game, (self.pos[0] + random.randint(-50, 50), self.pos[1] + random.randint(-50, 50)), None)
+            Life(self.game,self.pos)
+            EndingExplosion(self.game)
+            try:
+                self.game.p1_score = self.game.player_1.score
+            except:
+                pass
+            try:
+                self.game.p2_score = self.game.player_2.score
+            except:
+                pass
+
+    def check_shoot(self):
+        self.shoot()
+
+    def custom(self):
+        self.health_ratio = self.health * 1.0 / self.o_health
+
+class Boss4Pupper(Boss4):
+    def __init__(self,game,pos):
+        super(Boss4Pupper, self).__init__(game, pos)
+        self.o_health = 1000
+        self.health = 1000
+
+    def shoot(self):
+        if self.frame % 100 == 1:
+            self.shoot_on = True
+            target = self.find_target_pos()
+            bullet.Boss4Bullet2(self.pos, 0, target, 40, 5, self.game.enemy_bullets)
+        else:
+            self.shoot_on = False
+
+    def get_bomb_damage(self):
+        self.health -= 15
+
+    def check_death(self):
+        if self.health <= 0:
+            self.kill()
+            self.hit_box.kill()
+            self.beam2.kill()
+            self.beam1.kill()
+            self.beam1.hit_box.kill()
+            self.beam2.hit_box.kill()
+            EnemyExplosion(self.game, self, self.game.explosion_effect)
+            for i in range(50):
+                Coin(self.game, (self.pos[0] + random.randint(-50, 50), self.pos[1] + random.randint(-50, 50)), None)
+            Poison(self.game,self.pos)
+
+class Boss4Beam(pg.sprite.Sprite):
+    def __init__(self,enemy,delta):
+        super(Boss4Beam,self).__init__()
+        self.enemy = enemy
+        self.delta = delta
+        self.pos = (self.enemy.pos[0]+self.delta,self.enemy.pos[1]+357)
+        self.images = cycle([pg.transform.scale(GFX['beam{}'.format(x)],(216,600)) for x in range(1,9,1)])
+        self.image = next(self.images)
+        self.rect = self.image.get_rect(center = self.pos)
+        self.hit_box = pg.sprite.Sprite()
+        self.hit_box.image = pg.Surface((10, 600))
+        self.hit_box.rect = self.hit_box.image.get_rect(center=self.pos)
+        self.hit_box.body = self
+        self.frame = 0
+
+    def get_damage(self,player):
+        pass
+
+    def get_bomb_damage(self):
+        pass
+
+    def update(self):
+        self.frame += 1
+        if self.frame % 4 == 1:
+            self.image = next(self.images)
+        if self.enemy.groups():
+            self.pos = (self.enemy.pos[0] + self.delta, self.enemy.pos[1] + 357)
+            self.rect.center = self.pos
+            self.hit_box.rect.center = self.pos
+        else:
+            self.kill()
+            self.hit_box.kill()
+
+
+class Boss5(Enemy):
+    def __init__(self, game, pos):
+        super(Boss5, self).__init__(game, pos)
+        self.tag = 'boss'
+        self.target = self.find_target_pos()
+        self.o_health = 8000
+        self.health = 8000
+        self.health_ratio = self.health * 1.0 / self.o_health
+        self.speed = 0.5
+        self.direction = [1, 0]
+        self.image = pg.transform.flip(GFX['boss51'], False, True)
+        self.rect = self.image.get_rect(center=self.pos)
+        self.hit_box.image = pg.Surface((150, 220))
+        self.hit_box.rect = self.hit_box.image.get_rect(center=self.pos)
+        self.hit_box.body = self
+        self.heart = RotateRing(self, 400)
+        self.shield = Shield(self,400)
+        self.choice = 5
+
+        self.w = self.image.get_width() / 2.0
+        self.h = self.image.get_height() / 2.0
+        self.effect_images = cycle([GFX['e_00{}{}'.format((x + 1) // 10, (x + 1) % 10)] for x in range(10)])
+        self.effect_image = next(self.effect_images)
+        self.frame = 0
+
+    def shoot(self):
+        bullet.CaptainBullet0(self.pos, -self.frame * 6, self.game.enemy_bullets)
+        if self.frame % 500 == 1:
+            target = self.find_target_pos()
+            bullet.Boss5Bullet(self.game,self.pos,0,target,self.game.enemy_bullets)
+            self.choice = random.randint(5,10)
+        bullet.CaptainBullet0(self.pos, -self.frame * self.choice, self.game.enemy_bullets)
+        if self.frame % 4000 == 1:
+            Poison(self.game,self.pos)
+
+
+    def update_img(self):
+        if self.groups():
+            self.game.explosion_effect.add(self.heart)
+        if self.health_ratio <= 0.2:
+            self.image = pg.transform.flip(GFX['boss53'], False, True)
+        elif self.health_ratio <= 0.6:
+            self.image = pg.transform.flip(GFX['boss52'], False, True)
+        else:
+            self.image = pg.transform.flip(GFX['boss51'], False, True)
+        self.image.blit(self.effect_image, (self.w - 32, self.h - 32))
+        self.effect_image = next(self.effect_images)
+
+
+    def update_pos(self):
+        self.pos = (self.pos[0] + self.direction[0] * self.speed, self.pos[1] + self.direction[1] * self.speed)
+        self.rect.center = self.pos
+        if self.rect.left <= 0:
+            self.direction = [1, 0]
+        elif self.rect.right >= 600:
+            self.direction = [-1, 0]
+        self.hit_box.rect.center = self.pos
+
+    def get_bomb_damage(self):
+        self.game.explosion_effect.add(self.shield)
+
+    def check_death(self):
+        if self.health <= 0:
+            self.kill()
+            self.hit_box.kill()
+            EnemyExplosion(self.game, self, self.game.explosion_effect)
+            for i in range(50):
+                Coin(self.game, (self.pos[0] + random.randint(-50, 50), self.pos[1] + random.randint(-50, 50)), None)
+            EndingExplosion(self.game)
+            try:
+                self.game.p1_score = self.game.player_1.score
+            except:
+                pass
+            try:
+                self.game.p2_score = self.game.player_2.score
+            except:
+                pass
+
+    def check_shoot(self):
+        self.shoot()
+
+    def custom(self):
+        self.health_ratio = self.health * 1.0 / self.o_health

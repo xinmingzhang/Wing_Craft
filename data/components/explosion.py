@@ -231,3 +231,24 @@ class Radar(Cone):
             self.image = next(self.images)
         if self.frame >= 100:
             self.kill()
+
+
+class Shield(RotateRing):
+    def __init__(self,enemy,size):
+        super(Shield,self).__init__(enemy,size)
+        self.enemy = enemy
+        self.size = size
+        self.pos = self.enemy.pos
+        self.images = cycle([pg.transform.scale(GFX['s{}{}'.format(x//10,x%10)],(size,size)) for x in range(1,12)])
+        self.image = next(self.images)
+        self.rect = self.image.get_rect(center = self.pos)
+        self.frame = 0
+
+    def update(self):
+        self.pos = self.enemy.pos
+        self.rect.center = self.pos
+        self.frame +=1
+        if self.frame % 4 == 1:
+            self.image = next(self.images)
+        if self.frame >= 60:
+            self.kill()

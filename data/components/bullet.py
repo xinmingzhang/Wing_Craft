@@ -433,16 +433,7 @@ class ColonelWeapon2(object):
             EnemyBullet(pos, -120, None, 18, 5/math.cos(30/180.0*3.14), group)
 
 
-class Boss1Pattern1(object):
-    def __init__(self,pos,group):
-        for i in range(0,360,20):
-            EnemyBullet(pos,i,None,30,5,group)
 
-
-class Boss1Pattern2(object):
-    def __init__(self,pos,frame,group):
-        CaptainBullet0(pos, -frame * 8, group)
-        CaptainBullet0(pos, frame * 8, group)
 
 
 class FLBulletA(Bullet):
@@ -489,28 +480,10 @@ class FLBulletB(FLBulletA):
         self.rect.center = self.pos
 
 
-class MB(CorporalBullet):
-    def __init__(self,p_center,p_radius,p_angle,target,*group):
-        super(MB,self).__init__(p_center,p_radius,p_angle,target,*group)
-        self.image = pg.transform.scale(GFX['ebt3'],(10,10))
 
-    def update(self):
-        self.frame += 1
-        self.p_angle += 5
-        self.p_radius += 1
-        self.check_kill()
-        self.p_center = (self.p_center[0] + self.delta_move[0], self.p_center[1] + self.delta_move[1])
-        self.p_angle_rad = self.p_angle * 3.14/180
-        self.pos = angles.project(self.p_center, self.p_angle_rad, self.p_radius)
-        self.rect.center = self.pos
 
-class MBulletA(object):
-    def __init__(self,pos,target,*group):
-        self.pos = pos
-        for angle in range(0, 360, 10):
-            a = angle % 120
-            p_radius = abs(a - 60)
-            MB(self.pos,p_radius,angle,target,*group)
+
+
 
 class MajorBullet1(EnemyBullet):
     def __init__(self, pos, group):
@@ -551,6 +524,17 @@ class MajorBullet2(EnemyBullet):
                     if i % 90 != 0:
                         EnemyBullet(self.pos, i,None,10,10 * math.sin(2 * i / 180 * math.pi),self.group)
 
+
+class Boss1Pattern1(object):
+    def __init__(self,pos,group):
+        for i in range(0,360,20):
+            EnemyBullet(pos,i,None,30,5,group)
+
+
+class Boss1Pattern2(object):
+    def __init__(self,pos,frame,group):
+        CaptainBullet0(pos, -frame * 8, group)
+        CaptainBullet0(pos, frame * 8, group)
 
 class Boss2Bullet(pg.sprite.Sprite):
     def __init__(self,pos,enemy,reverse,group):
@@ -677,6 +661,14 @@ class Boss2B2(Bullet):
         self.check_kill()
         self.pos = (self.pos[0] + self.delta_move[0], self.pos[1] + self.delta_move[1])
         self.rect.center = self.pos
+        if self.rect.top > HEIGHT:
+            self.kill()
+        elif self.rect.bottom < 0:
+            self.kill()
+        elif self.rect.left > WIDTH:
+            self.kill()
+        elif self.rect.right < 0:
+            self.kill()
 
 
 class Boss2Weapon2(object):
@@ -685,3 +677,96 @@ class Boss2Weapon2(object):
         Boss2B2(pos, 45 +frame, 30, 10, group)
         Boss2B2(pos, 135 +frame, 30, 10, group)
         Boss2B2(pos, -135 +frame, 30, 10, group)
+class Boss4Bullet1(CorporalBullet):
+    def __init__(self,p_center,p_radius,p_angle,target,*group):
+        super(Boss4Bullet1,self).__init__(p_center,p_radius,p_angle,target,*group)
+        self.image = pg.transform.scale(GFX['ebt3'],(10,10))
+
+    def update(self):
+        self.frame += 1
+        self.p_angle += 5
+        self.p_radius += 0.5
+
+        self.check_kill()
+        self.p_center = (self.p_center[0] + self.delta_move[0], self.p_center[1] + self.delta_move[1])
+        self.p_angle_rad = self.p_angle * 3.14/180
+        self.pos = angles.project(self.p_center, self.p_angle_rad, self.p_radius)
+        self.rect.center = self.pos
+
+class Boss4Bullet2(EnemyBullet):
+    images = cycle([GFX['ebt{}'.format(x)] for x in range(5,12,1)])
+    def __init__(self, pos, angle, target, size, speed, group):
+        super(Boss4Bullet2, self).__init__(pos, angle, target, size, speed, group)
+        self.group = group
+        image = next(Boss4Bullet2.images)
+        self.image = pg.transform.scale(image,(self.size,self.size))
+
+
+    def update(self):
+        self.frame += 1
+        self.pos = (self.pos[0] + self.delta_move[0], self.pos[1] + self.delta_move[1])
+        self.rect.center = self.pos
+        if self.rect.bottom > HEIGHT:
+            self.kill()
+            if self.size > 20:
+                Boss4Bullet2(self.pos,random.randint(10,170),None,self.size-10,5,self.group)
+                Boss4Bullet2(self.pos, random.randint(10, 170), None, self.size-10, 5, self.group)
+        elif self.rect.top < 0:
+            self.kill()
+            if self.size > 20:
+                Boss4Bullet2(self.pos,random.randint(-170,-10),None,self.size-10,5,self.group)
+                Boss4Bullet2(self.pos, random.randint(-170, -10), None, self.size-10, 5, self.group)
+        elif self.rect.right > WIDTH:
+            self.kill()
+            if self.size > 20:
+                Boss4Bullet2(self.pos,random.randint(100,260),None,self.size-10,5,self.group)
+                Boss4Bullet2(self.pos, random.randint(100, 260), None, self.size-10, 5, self.group)
+        elif self.rect.left < 0:
+            self.kill()
+            if self.size > 20:
+                Boss4Bullet2(self.pos,random.randint(-80,80),None,self.size-10,5,self.group)
+                Boss4Bullet2(self.pos, random.randint(-80, 80), None, self.size-10, 5, self.group)
+
+
+class Boss4Weappon1(object):
+    def __init__(self,pos,target, num, group):
+        self.pos = pos
+        for angle in range(0, 360, 10):
+            a = angle % (360/num)
+            p_radius = abs(a - (180/num))
+            Boss4Bullet1(self.pos,p_radius,angle,target,group)
+
+class Boss5Bullet(Boss4Bullet2):
+    def __init__(self,game, pos, angle, target,  group):
+        super(Boss5Bullet, self).__init__(pos, angle, target, 40, 3, group)
+        self.game = game
+
+    def find_target_pos(self):
+        p1 = self.game.player_1
+        p2 = self.game.player_2
+        if p1.groups() and p2.groups():
+            d1 = angles.get_distance(self.pos, p1.pos)
+            d2 = angles.get_distance(self.pos, p2.pos)
+            if d1 >= d2:
+                return p1.pos
+            else:
+                return p2.pos
+        elif p1.groups() and not p2.groups():
+            return p1.pos
+        elif p2.groups() and not p1.groups():
+            return p2.pos
+        else:
+            return self.pos
+
+    def update(self):
+        self.frame += 1
+        target = self.find_target_pos()
+        self.angle = angles.get_angle(self.pos, target)
+        self.delta_move = angles.project((0, 0), self.angle, self.speed)
+        self.pos = (self.pos[0] + self.delta_move[0], self.pos[1] + self.delta_move[1])
+        self.rect.center = self.pos
+        if self.frame >= 500:
+            self.kill()
+
+
+
