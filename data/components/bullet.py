@@ -498,11 +498,11 @@ class MajorBullet1(EnemyBullet):
             if a == 3:
                 for i in range(0,360):
                     if i % 60 != 0:
-                        EnemyBullet(self.pos, i,None,10,10 * math.sin(3 * i / 180 * math.pi),self.group)
+                        EnemyBullet(self.pos, i,None,10,10 * math.sin(3.0 * i / 180 * math.pi),self.group)
             elif a == 5:
                 for i in range(0,360):
                     if i % 36 != 0:
-                        EnemyBullet(self.pos, i,None,10,10 * math.sin(5 * i / 180 * math.pi),self.group)
+                        EnemyBullet(self.pos, i,None,10,10 * math.sin(5.0 * i / 180 * math.pi),self.group)
 
 
 class MajorBullet2(EnemyBullet):
@@ -518,11 +518,11 @@ class MajorBullet2(EnemyBullet):
             if a == 4:
                 for i in range(0,360):
                     if i % 45 != 0:
-                        EnemyBullet(self.pos, i,None,10,10 * math.sin(4 * i / 180 * math.pi),self.group)
+                        EnemyBullet(self.pos, i,None,10,10 * math.sin(4.0 * i / 180 * math.pi),self.group)
             elif a == 2:
                 for i in range(0,360):
                     if i % 90 != 0:
-                        EnemyBullet(self.pos, i,None,10,10 * math.sin(2 * i / 180 * math.pi),self.group)
+                        EnemyBullet(self.pos, i,None,10,10 * math.sin(2.0 * i / 180 * math.pi),self.group)
 
 
 class Boss1Pattern1(object):
